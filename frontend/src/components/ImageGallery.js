@@ -1,12 +1,20 @@
 import React from 'react';
-import { Container, Row, Col, Card, Pagination } from 'react-bootstrap';
 
+/**
+ * ImageGallery component displays a grid of images with pagination.
+ * It takes in images, page, setPage, and totalPages as props.
+ *  
+ * @param {images,page,setPage,totalPages} params 
+ * @returns 
+ */
 const ImageGallery = ({ images, page, setPage, totalPages }) => {
+
   const getVisiblePages = () => {
     const delta = 2; // Number of pages to show before and after current page
     const range = [];
     const rangeWithDots = [];
 
+    // If there are no images, return an empty array
     for (let i = Math.max(2, page - delta); i <= Math.min(totalPages - 1, page + delta); i++) {
       range.push(i);
     }
@@ -29,63 +37,54 @@ const ImageGallery = ({ images, page, setPage, totalPages }) => {
   };
 
   return (
-    <Container className="mt-4">
-      <Row xs={1} md={2} lg={3} className="g-4">
+    <div className="container mx-auto mt-4 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {images.map((image) => (
-          <Col key={image.id}>
-            <Card className="h-100"> {/* Make all cards same height */}
-              <div style={{ height: '200px', overflow: 'hidden' }}>
-                <Card.Img
-                  variant="top"
+          <div key={image.id} className="h-full">
+            <div className="bg-white rounded-lg shadow-md h-full flex flex-col">
+              <div className="h-48 overflow-hidden rounded-t-lg">
+                <img
                   src={image.urls.regular}
                   alt={image.alt_description}
-                  style={{ 
-                    height: '100%',
-                    width: '100%',
-                    objectFit: 'cover'
-                  }}
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>{image.user.name}</Card.Title>
-                <Card.Text className="flex-grow-1">
+              <div className="p-4 flex flex-col flex-grow">
+                <h3 className="text-lg font-semibold mb-2">{image.user.name}</h3>
+                <p className="text-gray-600 flex-grow">
                   {image.description || image.alt_description || 'No description available'}
-                </Card.Text>
-                <Card.Text>
-                  <small className="text-muted">
-                    Likes: {image.likes} | Downloads: {image.downloads}
-                  </small>
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Likes: {image.likes} | Downloads: {image.downloads}
+                </p>
+              </div>
+            </div>
+          </div>
         ))}
-      </Row>
-      
+      </div>
       {totalPages > 1 && (
-        <Row className="justify-content-center mt-4">
-          <Pagination>
-            <Pagination.First onClick={() => setPage(1)} disabled={page === 1} />
-            <Pagination.Prev onClick={() => setPage(page - 1)} disabled={page === 1} />
+        <div className="flex justify-center mt-6">
+          <nav className="flex items-center space-x-2">
             {getVisiblePages().map((pageNum, index) => (
-              pageNum === '...' ? (
-                <Pagination.Ellipsis key={`ellipsis-${index}`} />
-              ) : (
-                <Pagination.Item
-                  key={pageNum}
-                  active={pageNum === page}
-                  onClick={() => setPage(pageNum)}
-                >
-                  {pageNum}
-                </Pagination.Item>
-              )
+              <button
+                key={index}
+                onClick={() => typeof pageNum === 'number' && setPage(pageNum)}
+                className={`px-3 py-2 rounded-md ${
+                  pageNum === page
+                    ? 'bg-blue-500 text-white'
+                    : pageNum === '...'
+                    ? 'text-gray-500 cursor-default'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                } ${typeof pageNum !== 'number' ? 'cursor-default' : ''}`}
+                disabled={typeof pageNum !== 'number'}
+              >
+                {pageNum}
+              </button>
             ))}
-            <Pagination.Next onClick={() => setPage(page + 1)} disabled={page === totalPages} />
-            <Pagination.Last onClick={() => setPage(totalPages)} disabled={page === totalPages} />
-          </Pagination>
-        </Row>
+          </nav>
+        </div>
       )}
-    </Container>
+    </div>
   );
 };
 
