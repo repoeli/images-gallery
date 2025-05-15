@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 /* Modern defaults */
 @layer base {
@@ -21,10 +21,6 @@
 
 /* Custom scrollbar for modern look */
 @layer utilities {
-  .scrollbar-modern {
-    scrollbar-width: thin;
-    scrollbar-color: #E5E7EB transparent;
-  }
   
   .scrollbar-modern::-webkit-scrollbar {
     width: 6px;
